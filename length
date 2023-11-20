@@ -1,0 +1,4 @@
+read -p "ENTER INPUT: " USER_INPUT
+USER_INPUT=$(echo "$USER_INPUT" | tr -d '[:space:]')
+length=${#USER_INPUT}
+echo "$length"

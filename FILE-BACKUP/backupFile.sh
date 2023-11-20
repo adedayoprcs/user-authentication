@@ -5,6 +5,8 @@ User
 USERNAME="cloud_user"
 LOGFILE="backup.log"
 BACKUP_DIR="/path/to/backup"
+timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+
 
 # Function to display usage information
 usage() {
@@ -37,6 +39,11 @@ while getopts ":u:f:d:" opt; do
     esac
 done
 
+# Check if no options were provided
+if [ "$#" -eq 0 ]; then
+    echo "No options provided."
+    usage
+fi
 # Check if the backup directory exists, create it if not
 if [ ! -d "$BACKUP_DIR" ]; then
     mkdir -p "$BACKUP_DIR"
@@ -45,10 +52,18 @@ fi
 # Backup files to the specified directory
 echo "Backing up files for user $USERNAME to $BACKUP_DIR" | tee -a "$LOGFILE"
 # Add your backup commands here (e.g., rsync, cp, tar)
- cp "$PWD/$LOGFILE" "$BACKUP_DIR"
+ if cp "$PWD/$LOGFILE" "$BACKUP_DIR"; then
+    echo "$timestamp | File copied successfully." >> backup.log
+    # Add other commands you want to execute if the copy is successful
+else
+    echo "$timestamp | Error: Unable to copy the file." >> backup.log
+    # Add other commands you want to execute if the copy fails
+fi
 
-# Display completion message
-echo "Backup completed successfully."
+
+# Log completion. 
+echo "Backup completed successfully at $timestamp" >> backup.log
+
 
 
 all_users=("John" "James" "Judas" "Jade")
